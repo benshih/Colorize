@@ -1,7 +1,7 @@
 % 15-463: Assignment 1, starter Matlab code
 
 % name of the input file
-imname = '00270v.jpg';
+imname = 'C:\Users\BenShih\BenFiles\Fall2013CMU\15862CompPhoto\Project1ColorizationByChannels\data\00106v.jpg';
 
 % read in the image
 fullim = imread(imname);
@@ -21,6 +21,16 @@ R = fullim(height*2+1:height*3,:);
 % "circshift", "sum", and "imresize" (for multiscale)
 %%%%%aG = align(G,B);
 %%%%%aR = align(R,B);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ben's strategy:
+% -normalize
+% -cross correlation of both images with b, find maximum of correlation,
+% center around that point using simple geo shifting
+
+% 9/1 - Naive implementation: simply add the pictures together
+
+
 
 
 % open figure
