@@ -74,6 +74,7 @@ BGxcorr = xcorr(Bcurr, Gcurr);
 
 
 
+
 % . Note: there may be more than one max, in which case you might need to be
 % more careful. See: http://www.mathworks.com/matlabcentral/newsreader/view_thread/269569
 % . May need to zeropad some arbitrarily large outside edge before using
