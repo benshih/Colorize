@@ -33,8 +33,17 @@ R = fullim(height*2+1:height*3,:);
 Gshift = G;
 Rshift = R;
 
-T = maketform('affine', [1 0 0; 0 1 0; 50 100 1]); 
-Gshift = imtransform(G, T, 'XData', [1 size(G, 2)], 'YData', [1 size(G, 1)]);
+% Create the affine transformation matrix (in this case, it is a
+% translation in x by tx and translation in y by ty).
+txG = 0;
+tyG = 0;
+Gt = maketform('affine', [1 0 0; 0 1 0; txG tyG 1]); 
+Gshift = imtransform(G, Gt, 'XData', [1 size(G, 2)], 'YData', [1 size(G, 1)]);
+
+txR = 0;
+tyR = 0;
+Rt = maketform('affine', [1 0 0; 0 1 0; txR tyR 1]);
+Rshift = imtransform(R, Rt, 'XData', [1 size(R, 2)], 'YData', [1 size(R, 1)]);
 
 
 % 9/1 - Naive implementation: simply add the pictures together.
