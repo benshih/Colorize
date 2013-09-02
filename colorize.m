@@ -58,28 +58,28 @@ Rt = maketform('affine', [1 0 0; 0 1 0; txR tyR 1]);
 Rshift = imtransform(R, Rt, 'XData', [1 size(R, 2)], 'YData', [1 size(R, 1)]);
 
 %% 9/2 - Check the cross correlation of the images with B. The place where the signal is most similar is the maximum value of the cross correlation.
-% 
-% % Convert the images to vectors.
-% Gcurr = G(:);
-% Rcurr = R(:);
-% Bcurr = B(:);
-% 
-% % Use cross correlation to see how similar the BR and BG signal pairs are.
-% BRxcorr = xcorr(Bcurr, Rcurr);
-% BGxcorr = xcorr(Bcurr, Gcurr);
-% 
-% % Find the max of the cross correlation in order to identify the point at
-% % which the signals are most similar. 
-% [BGmax BGindx] = max(BGxcorr);
-% 
-% 
-% 
-% 
-% % . Note: there may be more than one max, in which case you might need to be
-% % more careful. See: http://www.mathworks.com/matlabcentral/newsreader/view_thread/269569
-% % . May need to zeropad some arbitrarily large outside edge before using
-% % xcorr because otherwise there will be bias towards the exact overlap to
-% % be the max.
+
+% Convert the images to vectors.
+Gcurr = G(:);
+Rcurr = R(:);
+Bcurr = B(:);
+
+% Use cross correlation to see how similar the BR and BG signal pairs are.
+BRxcorr = xcorr(Bcurr, Rcurr);
+BGxcorr = xcorr(Bcurr, Gcurr);
+
+% Find the max of the cross correlation in order to identify the point at
+% which the signals are most similar. 
+[BGmax BGindx] = max(BGxcorr);
+
+
+
+
+% . Note: there may be more than one max, in which case you might need to be
+% more careful. See: http://www.mathworks.com/matlabcentral/newsreader/view_thread/269569
+% . May need to zeropad some arbitrarily large outside edge before using
+% xcorr because otherwise there will be bias towards the exact overlap to
+% be the max.
 
 
 %% 9/1 - Naive implementation: simply add the pictures together.
