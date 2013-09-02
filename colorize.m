@@ -25,11 +25,7 @@ R = fullim(height*2+1:height*3,:);
 %%%%%aG = align(G,B);
 %%%%%aR = align(R,B);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Ben's strategy:
-% -normalize
-% -cross correlation of both images with b, find maximum of correlation,
-% center around that point using simple geo shifting
+
 
 %% 9/2 - Naive implementation for L2 norm ("Sum of Squared Differences (SSD)")
 
@@ -90,7 +86,7 @@ Rshift = imtransform(R, Rt, 'XData', [1 size(R, 2)], 'YData', [1 size(R, 1)]);
 
 %% 9/1 - Naive implementation: simply add the pictures together.
 
-aggImg = cat(3, B, Gshift, Rshift);
+aggImg = cat(3, Rshift, Gshift, B);
 imshow(aggImg)
 
 xshiftG
@@ -98,6 +94,9 @@ yshiftG
 xshiftR
 yshiftR
 
+
+% this command is a decent approximation for the shed image:
+% figure; Gshift = circshift(G, [4, -1]);Rshift = circshift(R, [12, 0]);aggImg = cat(3, Rshift, Gshift, B); imshow(aggImg)
 
 % open figure
 %% figure(1);
