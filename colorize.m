@@ -95,6 +95,14 @@ xshiftR
 yshiftR
 
 
+%% TODO - Normal cross correlation
+% http://www.mathworks.com/help/images/examples/registering-an-image-using-normalized-cross-correlation.html
+
+
+
+
+%%
+
 % this command is a decent approximation for the shed image:
 % figure; Gshift = circshift(G, [4, -1]);Rshift = circshift(R, [12, 0]);aggImg = cat(3, Rshift, Gshift, B); imshow(aggImg)
 
