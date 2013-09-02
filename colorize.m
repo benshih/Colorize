@@ -1,5 +1,8 @@
 % 15-463: Assignment 1, starter Matlab code
 
+close all
+clear all
+
 % name of the input file using relative paths
 imname = 'Colorize/00888v.jpg';
 
@@ -28,30 +31,72 @@ R = fullim(height*2+1:height*3,:);
 % -cross correlation of both images with b, find maximum of correlation,
 % center around that point using simple geo shifting
 
-% 9/2 - Naive implementation for L2 norm ("Sum of Squared Differences
-% (SSD)")
-Gshift = G;
-Rshift = R;
+%% 9/2 - Naive implementation for L2 norm ("Sum of Squared Differences (SSD)")
 
-% Create the affine transformation matrix (in this case, it is a
-% translation in x by tx and translation in y by ty).
-txG = 0;
-tyG = 0;
-Gt = maketform('affine', [1 0 0; 0 1 0; txG tyG 1]); 
+% Search over a window of possible displacements.
+xdisplace = -15:15;
+ydisplace = -15:15;
+
+%% Create the affine transformation matrix (in this case, it is a translation in x by tx and translation in y by ty).
+
+L2normG = zeros(length(xdisplace)*length(ydisplace), 3); % third dimension is for storing the metric value
+L2normR = zeros(length(xdisplace)*length(ydisplace), 3); % third dimension is for storing the metric value
+
+for i = 1:length(xdisplace)
+    for j = 1:length(ydisplace)
+        
+        % Alignment for G.
+        txG = xdisplace(i);
+        tyG = ydisplace(j);
+        Gt = maketform('affine', [1 0 0; 0 1 0; txG tyG 1]); 
+        Gshift = imtransform(G, Gt, 'XData', [1 size(G, 2)], 'YData', [1 size(G, 1)]);
+        
+        row = (i-1)*length(xdisplace)+j;
+        L2normG(row, 1) = i;
+        L2normG(row, 2) = j;
+        L2normG(row, 3) = sum(sum((B-Gshift).^2));
+        
+        % Alignment for R.
+        
+        txR = xdisplace(i);
+        tyR = ydisplace(j);
+        Rt = maketform('affine', [1 0 0; 0 1 0; txR tyR 1]); 
+        Rshift = imtransform(R, Rt, 'XData', [1 size(R, 2)], 'YData', [1 size(R, 1)]);
+        
+        row = (i-1)*length(xdisplace)+j;
+        L2normR(row, 1) = i;
+        L2normR(row, 2) = j;
+        L2normR(row, 3) = sum(sum((B-Rshift).^2));
+    end
+end
+
+% Find the shift corresponding to the minimum distance and make the shift.
+[minG, indx] = min(L2normG(:, 3));
+xshiftG = xdisplace(L2normG(indx, 1));
+yshiftG = ydisplace(L2normG(indx, 2));
+
+Gt = maketform('affine', [1 0 0; 0 1 0; xshiftG yshiftG 1]);
 Gshift = imtransform(G, Gt, 'XData', [1 size(G, 2)], 'YData', [1 size(G, 1)]);
 
-txR = 0;
-tyR = 0;
-Rt = maketform('affine', [1 0 0; 0 1 0; txR tyR 1]);
+
+% Find the shift corresponding to the minimum distance and make the shift.
+[minR, indx] = min(L2normR(:, 3));
+xshiftR = xdisplace(L2normR(indx, 1));
+yshiftR = ydisplace(L2normR(indx, 2));
+
+Rt = maketform('affine', [1 0 0; 0 1 0; xshiftR yshiftR 1]);
 Rshift = imtransform(R, Rt, 'XData', [1 size(R, 2)], 'YData', [1 size(R, 1)]);
 
 
-% 9/1 - Naive implementation: simply add the pictures together.
+%% 9/1 - Naive implementation: simply add the pictures together.
 
 aggImg = cat(3, B, Gshift, Rshift);
 imshow(aggImg)
 
-
+xshiftG
+yshiftG
+xshiftR
+yshiftR
 
 
 % open figure
