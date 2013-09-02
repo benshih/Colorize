@@ -1,7 +1,7 @@
 % 15-463: Assignment 1, starter Matlab code
 
-% name of the input file
-imname = 'C:\Users\BenShih\BenFiles\Fall2013CMU\15862CompPhoto\Project1ColorizationByChannels\00888v.jpg';
+% name of the input file using relative paths
+imname = 'Colorize/00888v.jpg';
 
 % read in the image
 fullim = imread(imname);
@@ -28,9 +28,18 @@ R = fullim(height*2+1:height*3,:);
 % -cross correlation of both images with b, find maximum of correlation,
 % center around that point using simple geo shifting
 
+% 9/2 - Naive implementation for L2 norm ("Sum of Squared Differences
+% (SSD)")
+Gshift = G;
+Rshift = R;
+
+T = maketform('affine', [1 0 0; 0 1 0; 50 100 1]); 
+Gshift = imtransform(G, T, 'XData', [1 size(G, 2)], 'YData', [1 size(G, 1)]);
+
+
 % 9/1 - Naive implementation: simply add the pictures together.
 
-aggImg = cat(3, R, G, B);
+aggImg = cat(3, B, Gshift, Rshift);
 imshow(aggImg)
 
 
