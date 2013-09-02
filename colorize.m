@@ -1,5 +1,15 @@
 % 15-463: Assignment 1, starter Matlab code
 
+% Benjamin Shih
+% Timeline: 9/1/2013 to ---
+% Due: 
+% Project Description:
+
+clear all
+close all
+clc
+
+%% TODO - load all pictures automatically. Split up between low res and high res.
 % name of the input file using relative paths
 imname = 'Colorize/00888v.jpg';
 
@@ -22,13 +32,15 @@ R = fullim(height*2+1:height*3,:);
 %%%%%aG = align(G,B);
 %%%%%aR = align(R,B);
 
+
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ben's strategy:
 % -normalize
 % -cross correlation of both images with b, find maximum of correlation,
 % center around that point using simple geo shifting
 
-% 9/2 - Naive implementation for L2 norm ("Sum of Squared Differences
+%% 9/2 - Naive implementation for L2 norm ("Sum of Squared Differences
 % (SSD)")
 Gshift = G;
 Rshift = R;
@@ -45,10 +57,34 @@ tyR = 0;
 Rt = maketform('affine', [1 0 0; 0 1 0; txR tyR 1]);
 Rshift = imtransform(R, Rt, 'XData', [1 size(R, 2)], 'YData', [1 size(R, 1)]);
 
+%% 9/2 - Check the cross correlation of the images with B. The place where the signal is most similar is the maximum value of the cross correlation.
 
-% 9/1 - Naive implementation: simply add the pictures together.
+% Convert the images to vectors.
+Gcurr = G(:);
+Rcurr = R(:);
+Bcurr = B(:);
 
-aggImg = cat(3, B, Gshift, Rshift);
+% Use cross correlation to see how similar the BR and BG signal pairs are.
+BRxcorr = xcorr(Bcurr, Rcurr);
+BGxcorr = xcorr(Bcurr, Gcurr);
+
+% Find the max of the cross correlation in order to identify the point at
+% which the signals are most similar. 
+[BGmax BGindx] = max(BGxcorr);
+
+
+
+% . Note: there may be more than one max, in which case you might need to be
+% more careful. See: http://www.mathworks.com/matlabcentral/newsreader/view_thread/269569
+% . May need to zeropad some arbitrarily large outside edge before using
+% xcorr because otherwise there will be bias towards the exact overlap to
+% be the max.
+
+
+%% 9/1 - Naive implementation: simply add the pictures together.
+
+aggImg = cat(3, B, Gshift, zeros(size(R)));
+% aggImg = cat(3, B, Gshift, Rshift);
 imshow(aggImg)
 
 
